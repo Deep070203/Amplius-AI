@@ -1,0 +1,55 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model Agent {
+  id            String          @id @default(uuid())
+  name          String
+  description   String?
+  guidance      String?
+  documents     Document[]      // One-to-many relation (Agent → Documents)
+  createdAt     DateTime        @default(now())
+  DocumentChunk DocumentChunk[]
+  chats         Chat[]         // Added relation name
+}
+
+model Document {
+  id       String          @id @default(uuid())
+  filename String
+  agentId  String
+  agent    Agent           @relation(fields: [agentId], references: [id], onDelete: Cascade)
+  chunks   DocumentChunk[]
+}
+
+model DocumentChunk {
+  id         String   @id @default(uuid())
+  content    String
+  embedding  String   // Store embeddings as a JSON string
+  documentId String
+  agentId    String
+  document   Document @relation(fields: [documentId], references: [id], onDelete: Cascade)
+  agent      Agent    @relation(fields: [agentId], references: [id], onDelete: Cascade)
+}
+
+model Chat {
+  id        String    @id @default(uuid())
+  name      String
+  agentId   String
+  agent     Agent     @relation(fields: [agentId], references: [id], onDelete: Cascade)
+  messages  Message[]
+}
+
+model Message {
+  id        String   @id @default(uuid())
+  chatId    String
+  chat      Chat     @relation(fields: [chatId], references: [id], onDelete: Cascade)
+  role      String   // "system" | "user" | "assistant"
+  content   String   @db.Text
+  source    String?  // Store source name for RAG
+  createdAt DateTime @default(now())
+}
