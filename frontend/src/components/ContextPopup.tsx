@@ -48,6 +48,7 @@ const ContextPopup: React.FC<ContextPopupProps> = ({ onClose }) => {
         for (const file of files) {
             const doc = await api.addDocument(agentId, file.name);
             setContext(prev => [...prev, doc]);
+            console.log("document: ", doc);
             const formData = new FormData();
             formData.append("file", file);
 

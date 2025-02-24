@@ -10,11 +10,8 @@ const embeddings = new OpenAIEmbeddings({
 });
 
 export class DocumentProcessor {
-    static async processDocument(file: Buffer, filename: string, agentId: string) {
+    static async processDocument(documentId: string, content: string, agentId: string) {
         try {
-            // Extract text content from the file
-            const content = file.toString('utf-8');
-
             // Create document record
             const document = await dbService.getAgentDocuments(agentId);
             if (!document) {
@@ -29,18 +26,18 @@ export class DocumentProcessor {
             const chunks = await splitter.createDocuments([content]);
 
             // Process each chunk
-            // for (const chunk of chunks) {
-            //     const embedding = await embeddings.embedQuery(chunk.pageContent);
+            for (const chunk of chunks) {
+                const embedding = await embeddings.embedQuery(chunk.pageContent);
                 
-            //     await prisma.documentChunk.create({
-            //         data: {
-            //             content: chunk.pageContent,
-            //             embedding: JSON.stringify(embedding),
-            //             documentId: document.id,
-            //             agentId,
-            //         }
-            //     });
-            // }
+                await prisma.documentChunk.create({
+                    data: {
+                        content: chunk.pageContent,
+                        embedding: JSON.stringify(embedding),
+                        documentId: documentId,
+                        agentId,
+                    }
+                });
+            }
 
             return document;
         } catch (error) {
