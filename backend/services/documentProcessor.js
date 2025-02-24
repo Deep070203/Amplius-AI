@@ -14,22 +14,14 @@ const client_1 = require("@prisma/client");
 const openai_1 = require("@langchain/openai");
 const text_splitter_1 = require("langchain/text_splitter");
 const ml_distance_1 = require("ml-distance");
-const db_1 = require("./db");
 const prisma = new client_1.PrismaClient();
 const embeddings = new openai_1.OpenAIEmbeddings({
     openAIApiKey: process.env.OPENAI_API_KEY,
 });
 class DocumentProcessor {
-    static processDocument(file, filename, agentId) {
+    static processDocument(documentId, content, agentId) {
         return __awaiter(this, void 0, void 0, function* () {
             try {
-                // Extract text content from the file
-                const content = file.toString('utf-8');
-                // Create document record
-                const document = yield db_1.dbService.getAgentDocuments(agentId);
-                if (!document) {
-                    throw new Error('Failed to create document');
-                }
                 // Split content into chunks
                 const splitter = new text_splitter_1.RecursiveCharacterTextSplitter({
                     chunkSize: 1000,
@@ -37,18 +29,18 @@ class DocumentProcessor {
                 });
                 const chunks = yield splitter.createDocuments([content]);
                 // Process each chunk
-                // for (const chunk of chunks) {
-                //     const embedding = await embeddings.embedQuery(chunk.pageContent);
-                //     await prisma.documentChunk.create({
-                //         data: {
-                //             content: chunk.pageContent,
-                //             embedding: JSON.stringify(embedding),
-                //             documentId: document.id,
-                //             agentId,
-                //         }
-                //     });
-                // }
-                return document;
+                for (const chunk of chunks) {
+                    const embedding = yield embeddings.embedQuery(chunk.pageContent);
+                    yield prisma.documentChunk.create({
+                        data: {
+                            content: chunk.pageContent,
+                            embedding: JSON.stringify(embedding),
+                            documentId: documentId,
+                            agentId,
+                        }
+                    });
+                }
+                return documentId;
             }
             catch (error) {
                 console.error('Error processing document:', error);

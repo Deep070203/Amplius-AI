@@ -89,7 +89,7 @@ export const dbService = {
         filename,
       },
     });
-    return document.id;
+    return document;
   },
 
   async addDocumentChunk(documentId: string, agentId: string, content: string, embedding: string) {

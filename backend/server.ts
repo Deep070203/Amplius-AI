@@ -190,10 +190,14 @@ app.post("/upload", upload.single("file"), async (req, res) => {
         //     return res.status(400).json({ error: "No file uploaded" });
         // }
 
+        const docId = req.body.doc;
         const fileBuffer = fs.readFileSync(req.file!.path);
+        const agentId = req.body.agentId;
         const pdfData = await pdfParse(fileBuffer);
 
         res.json({ message: "PDF uploaded successfully", content: pdfData.text });
+        await DocumentProcessor.processDocument(docId, pdfData.text, agentId);
+        
         
     } catch (error) {
         res.status(500).json({ error: "Failed to upload file" });

@@ -20,6 +20,7 @@ const multer_1 = __importDefault(require("multer"));
 const fs_1 = __importDefault(require("fs"));
 const pdf_parse_1 = __importDefault(require("pdf-parse"));
 const db_1 = require("./services/db");
+const documentProcessor_1 = require("./services/documentProcessor");
 dotenv_1.default.config();
 const app = (0, express_1.default)();
 app.use(express_1.default.json());
@@ -175,9 +176,12 @@ app.post("/upload", upload.single("file"), (req, res) => __awaiter(void 0, void 
         // if (!req.file) {
         //     return res.status(400).json({ error: "No file uploaded" });
         // }
+        const docId = req.body.doc;
         const fileBuffer = fs_1.default.readFileSync(req.file.path);
+        const agentId = req.body.agentId;
         const pdfData = yield (0, pdf_parse_1.default)(fileBuffer);
         res.json({ message: "PDF uploaded successfully", content: pdfData.text });
+        yield documentProcessor_1.DocumentProcessor.processDocument(docId, pdfData.text, agentId);
     }
     catch (error) {
         res.status(500).json({ error: "Failed to upload file" });

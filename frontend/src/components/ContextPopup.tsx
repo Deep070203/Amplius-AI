@@ -51,6 +51,8 @@ const ContextPopup: React.FC<ContextPopupProps> = ({ onClose }) => {
             console.log("document: ", doc);
             const formData = new FormData();
             formData.append("file", file);
+            formData.append("doc", doc.id);
+            formData.append("agentId", agentId);
 
             const response = await fetch("http://localhost:5002/upload", {
                 method: "POST",

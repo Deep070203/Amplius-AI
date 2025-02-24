@@ -108,7 +108,7 @@ exports.dbService = {
                     filename,
                 },
             });
-            return document.id;
+            return document;
         });
     },
     addDocumentChunk(documentId, agentId, content, embedding) {

@@ -3,20 +3,16 @@ import { OpenAIEmbeddings } from '@langchain/openai'
 import { RecursiveCharacterTextSplitter } from 'langchain/text_splitter';
 import { similarity } from 'ml-distance';
 import  { dbService }  from './db';
+import { HuggingFaceTransformersEmbeddings } from "@langchain/community/embeddings/huggingface_transformers";
 
 const prisma = new PrismaClient();
-const embeddings = new OpenAIEmbeddings({
-    openAIApiKey: process.env.OPENAI_API_KEY,
-});
+const embeddings = new HuggingFaceTransformersEmbeddings({
+    model: "Xenova/all-MiniLM-L6-v2",
+  });
 
 export class DocumentProcessor {
     static async processDocument(documentId: string, content: string, agentId: string) {
         try {
-            // Create document record
-            const document = await dbService.getAgentDocuments(agentId);
-            if (!document) {
-                throw new Error('Failed to create document');
-            }
 
             // Split content into chunks
             const splitter = new RecursiveCharacterTextSplitter({
@@ -39,7 +35,7 @@ export class DocumentProcessor {
                 });
             }
 
-            return document;
+            return documentId;
         } catch (error) {
             console.error('Error processing document:', error);
             throw error;
