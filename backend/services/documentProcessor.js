@@ -11,12 +11,12 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.DocumentProcessor = void 0;
 const client_1 = require("@prisma/client");
-const openai_1 = require("@langchain/openai");
 const text_splitter_1 = require("langchain/text_splitter");
 const ml_distance_1 = require("ml-distance");
+const huggingface_transformers_1 = require("@langchain/community/embeddings/huggingface_transformers");
 const prisma = new client_1.PrismaClient();
-const embeddings = new openai_1.OpenAIEmbeddings({
-    openAIApiKey: process.env.OPENAI_API_KEY,
+const embeddings = new huggingface_transformers_1.HuggingFaceTransformersEmbeddings({
+    model: "Xenova/all-MiniLM-L6-v2",
 });
 class DocumentProcessor {
     static processDocument(documentId, content, agentId) {
