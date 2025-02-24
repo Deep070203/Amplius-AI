@@ -2,6 +2,12 @@ import React, { useState, useRef, useEffect } from "react";
 import { IoSendSharp } from "react-icons/io5";
 import { api } from "../api";
 import { Message } from "../types";
+import Markdown from 'react-markdown';
+import rehypeHighlight from "rehype-highlight";
+import rehypeReact from "rehype-react";
+import remarkGfm from "remark-gfm";
+import remarkParse from "remark-parse";
+import remarkRehype from "remark-rehype";
 
 interface ChatProps {
   chatId: string;
@@ -64,7 +70,7 @@ const Chat: React.FC<ChatProps> = ({ chatId, messages, updateMessages }) => {
                     : "bg-gray-700 text-white"
                 }`}
               >
-                {msg.content}
+                <Markdown remarkPlugins={[remarkGfm, remarkParse, rehypeReact]}>{msg.content}</Markdown>
               </div>
             </div>
           ))}
