@@ -69,33 +69,33 @@ app.post("/chat", async (req, res) => {
             console.log("Agent not found");
         }
         // Get the latest user message
-        //const userMessage = messages[messages.length - 1];
+        const userMessage = messages[messages.length - 1];
         
         // Search for relevant chunks if the agent has documents
-        // let context: DocumentContext[] = [];
-        // if (agent!.documents.length > 0) {
-        //     const relevantChunks = await DocumentProcessor.searchRelevantChunks(
-        //         userMessage.content,
-        //         chat!.agentId
-        //     );
+        let context: DocumentContext[] = [];
+         if (agent!.documents.length > 0) {
+             const relevantChunks = await DocumentProcessor.searchRelevantChunks(
+                 userMessage.content,
+                 chat!.agentId
+             );
 
-        //     context = relevantChunks.map(chunk => ({
-        //         content: chunk.content,
-        //         source: chunk.document.filename
-        //     }));
-        // }
+             context = relevantChunks.map(chunk => ({
+                 content: chunk.content,
+                 source: chunk.documentId
+             }));
+         }
 
         // Create system message with guidance and context
         const systemMessage = {
             role: "system",
-            content: `${agent!.guidance || "You are a helpful AI assistant."}`
-            // ${
-            //     context.length > 0 
-            //         ? `Context from relevant documents:\n${context.map(c => 
-            //             `Source: ${c.source}\nContent: ${c.content}\n`).join('\n')}\n
-            //           When using information from the context, cite the source.`
-            //         : ''
-            // }`
+            content: `${agent!.guidance || "You are a helpful AI assistant."}
+             ${
+                 context.length > 0 
+                     ? `Context from relevant documents:\n${context.map(c => 
+                         `Source: ${c.source}\nContent: ${c.content}\n`).join('\n')}\n
+                       When using information from the context, cite the source.`
+                     : ''
+             }`
         };
 
         // Combine system message with user messages
@@ -120,7 +120,7 @@ app.post("/chat", async (req, res) => {
 
         res.json({
             ...response.data,
-            //sources: context.map(c => c.source)
+            sources: context.map(c => c.source)
         });
     } catch (error) {
         console.error("Error:", error);
