@@ -3,11 +3,11 @@ import { IoSendSharp } from "react-icons/io5";
 import { api } from "../api";
 import { Message } from "../types";
 import Markdown from 'react-markdown';
-import rehypeHighlight from "rehype-highlight";
-import rehypeReact from "rehype-react";
 import remarkGfm from "remark-gfm";
 import remarkParse from "remark-parse";
-import remarkRehype from "remark-rehype";
+import remarkMermaid from "remark-mermaidjs";
+import { CodeProps } from 'react-markdown/lib/ast-to-react';
+import CodeBlock from "./CodeBlock";
 
 interface ChatProps {
   chatId: string;
@@ -70,7 +70,27 @@ const Chat: React.FC<ChatProps> = ({ chatId, messages, updateMessages }) => {
                     : "bg-gray-700 text-white"
                 }`}
               >
-                <Markdown remarkPlugins={[remarkGfm, remarkParse, rehypeReact]}>{msg.content}</Markdown>
+                <Markdown 
+                  remarkPlugins={[remarkGfm, remarkParse, remarkMermaid]}
+                  components={{
+                    code(props: CodeProps) {
+                      const { className, children, node, ...rest } = props;
+                      const match = /language-(\w+)/.exec(className || '');
+                      return !props.inline ? (
+                        <CodeBlock
+                          value={String(children).replace(/\n$/, '')}
+                          language={match && match[1]}
+                        />
+                      ) : (
+                        <code className={className} {...rest}>
+                          {children}
+                        </code>
+                      );
+                    }
+                  }}
+                >
+                  {msg.content}
+                </Markdown>
               </div>
             </div>
           ))}
