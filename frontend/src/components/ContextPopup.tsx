@@ -61,7 +61,7 @@ const ContextPopup: React.FC<ContextPopupProps> = ({ onClose }) => {
 
             const data = await response.json();
             setFileContent(data.content);
-            console.log("Content:", data.content);
+            console.log("Content:", fileContent);
         }
       console.log("Added documents:", context);
     } catch (error) {

@@ -41,7 +41,8 @@ body {
 /* Layout */
 .app-container {
   display: flex;
-  height: 100vh;
+  flex-direction: row;
+  height: 92vh;
   width: 100vw;
   background-color: var(--chat-bg);
   overflow-y: scroll;
@@ -447,12 +448,10 @@ body {
   cursor: pointer;
 }
 
-.screen{
-  background-color: white;
-  height: 100vh;
-  width: 100vw;
+.screen {
   display: flex;
   flex-direction: column;
+  flex: 1;
 }
 
 /* Welcome Screen */

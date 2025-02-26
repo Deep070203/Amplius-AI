@@ -5,7 +5,6 @@ import { Message } from "../types";
 import Markdown from 'react-markdown';
 import remarkGfm from "remark-gfm";
 import remarkParse from "remark-parse";
-import remarkMermaid from "remark-mermaidjs";
 import { CodeProps } from 'react-markdown/lib/ast-to-react';
 import CodeBlock from "./CodeBlock";
 
@@ -71,11 +70,12 @@ const Chat: React.FC<ChatProps> = ({ chatId, messages, updateMessages }) => {
                 }`}
               >
                 <Markdown 
-                  remarkPlugins={[remarkGfm, remarkParse, remarkMermaid]}
+                  remarkPlugins={[remarkGfm, remarkParse]}
                   components={{
                     code(props: CodeProps) {
                       const { className, children, node, ...rest } = props;
                       const match = /language-(\w+)/.exec(className || '');
+                      // console.log("match: ",match);
                       return !props.inline ? (
                         <CodeBlock
                           value={String(children).replace(/\n$/, '')}

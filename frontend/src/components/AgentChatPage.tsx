@@ -5,7 +5,6 @@ import Chat from './Chat';
 import { api } from '../api';
 import NavBar from './NavBar';
 import { Message, Chat as ChatType, Agent } from '../types';
-import  PdfViewer  from './PdfViewer';
 
 interface ChatSession {
   id: string;
