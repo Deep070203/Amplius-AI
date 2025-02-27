@@ -35,6 +35,8 @@ For backend (Will run on 5002 port):
 node index.js
 ```
 
+Sometimes, the Axios posts error when returning LLM response. Just close the window and restart both server and frontend!
+
 Features:
 1. Give them guidance on how they should behave and what they should talk about
 2. Add files and chat with them (TODO: PDF viewer)
