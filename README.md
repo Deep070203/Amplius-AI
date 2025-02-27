@@ -15,19 +15,22 @@ DB_PORT=5432
 DATABASE_URL=postgresql://${DB_USER}:${DB_PASSWORD}@${DB_HOST}:${DB_PORT}/${DB_NAME}
 ``` 
 
-Split the terminals and cd one to frontend and one to backend
+Split the terminals and change the first directory to frontend and other to backend
 
+Install necessary dependencies by writing this in both terminals:
 ```bash
 npm i
 ```
 
-For frontend:
+### To run the Application
+
+For frontend (Will run on Localhost 5173):
 
 ```bash
 npm run dev
 ```
 
-For backend:
+For backend (Will run on 5002 port):
 ```bash
 node index.js
 ```
