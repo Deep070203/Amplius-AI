@@ -4,7 +4,7 @@ import Sidebar from './Sidebar';
 import Chat from './Chat';
 import { api } from '../api';
 import NavBar from './NavBar';
-import { Message, Chat as ChatType, Agent } from '../types';
+import { Message, Agent } from '../types';
 
 interface ChatSession {
   id: string;

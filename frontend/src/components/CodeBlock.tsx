@@ -30,14 +30,14 @@ const CodeBlock: React.FC<CodeBlockProps> = ({ value, language }) => {
   };
 
   return (
-    <div className="code-block-container relative my-4 rounded-md overflow-hidden">
-      <div className="code-header bg-gray-800 px-4 py-2 flex justify-between items-center">
-        <span className="text-gray-400 text-sm">{language || 'code'}</span>
-        <div className="flex gap-2">
+    <div className="code-block-container ">
+      <div className="code-header">
+        <span className="">{language || 'code'}</span>
+        <div className="">
           {isMermaid && (
             <button 
               onClick={handleRenderMermaid} 
-              className="copy-button text-gray-400 hover:text-white transition-colors"
+              className="copy-button"
               aria-label="Render diagram"
               title="Toggle diagram view"
             >
@@ -46,7 +46,7 @@ const CodeBlock: React.FC<CodeBlockProps> = ({ value, language }) => {
           )}
           <button 
             onClick={handleCopy} 
-            className="copy-button text-gray-400 hover:text-white transition-colors"
+            className="copy-button"
             aria-label="Copy code"
             title="Copy to clipboard"
           >
@@ -56,11 +56,11 @@ const CodeBlock: React.FC<CodeBlockProps> = ({ value, language }) => {
       </div>
       
       {isMermaid && showImage ? (
-        <div className="mermaid-image-container bg-white p-4 flex justify-center">
+        <div className="mermaid-image-container">
           <img 
             src={getMermaidImageUrl()} 
             alt="Mermaid diagram" 
-            className="max-w-full"
+            className=""
             onError={(e) => {
               console.error("Failed to load Mermaid diagram", e);
               setShowImage(false);
@@ -68,7 +68,7 @@ const CodeBlock: React.FC<CodeBlockProps> = ({ value, language }) => {
           />
         </div>
       ) : (
-        <pre className="bg-gray-900 p-4 overflow-x-auto">
+        <pre className="">
           <code className={language ? `language-${language}` : ''}>
             {value}
           </code>

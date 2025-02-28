@@ -1,108 +1,62 @@
 import React, { useState, useEffect } from "react";
-import Sidebar from "./components/Sidebar";
-import Chat from "./components/Chat";
+import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
+import Dashboard from "./components/Dashboard";
+import AgentChatPage from "./components/AgentChatPage";
 import { api } from "./api";
+import { Document, Agent } from "./types";
 
-interface Message {
-  role: "user" | "assistant";
-  content: string;
-}
-
-interface ChatSession {
-  id: string;
-  name: string;
-  messages: Message[];
-}
 
 const App: React.FC = () => {
-  const [chats, setChats] = useState<ChatSession[]>([]);
-  const [currentChat, setCurrentChat] = useState<ChatSession | null>(null);
+  const [agents, setAgents] = useState<Agent[]>([]);
 
   useEffect(() => {
-    loadChats();
+    loadAgents();
   }, []);
 
-  const loadChats = async () => {
+  const loadAgents = async () => {
     try {
-      const chatList = await api.getAllChats();
-      setChats(chatList.map(chat => ({ ...chat, messages: [] })));
+      const agentList = await api.getAllAgents();
+      console.log("agentList", agentList);
+      setAgents(agentList);
     } catch (error) {
-      console.error("Error loading chats:", error);
+      console.error("Error loading agents:", error);
     }
   };
 
-  const loadChatMessages = async (chatId: string) => {
+  const handleNewAgent = async (agentData: {
+    name: string;
+    description?: string;
+    guidance?: string;
+    context?: Document[];
+  }) => {
     try {
-      const messages = await api.getChatMessages(chatId);
-      setChats(prev => 
-        prev.map(chat => 
-          chat.id === chatId ? { ...chat, messages } : chat
-        )
-      );
-      setCurrentChat(prev => 
-        prev?.id === chatId ? { ...prev, messages } : prev
-      );
+      const newAgent = await api.createAgent(agentData.name, agentData.description, agentData.guidance, agentData.context);
+      setAgents(prevAgents => [...prevAgents, newAgent]);
     } catch (error) {
-      console.error("Error loading messages:", error);
+      console.error("Error creating agent:", error);
     }
-  };
-
-  const newChat = async () => {
-    try {
-      const chat = await api.createChat(`Chat ${chats.length + 1}`);
-      const newChat = { ...chat, messages: [] };
-      setChats(prev => [...prev, newChat]);
-      setCurrentChat(newChat);
-    } catch (error) {
-      console.error("Error creating chat:", error);
-    }
-  };
-
-  const selectChat = async (id: string) => {
-    const selected = chats.find(c => c.id === id);
-    if (selected) {
-      setCurrentChat(selected);
-      if (selected.messages.length === 0) {
-        await loadChatMessages(id);
-      }
-    }
-  };
-
-  const updateMessages = async (chatId: string, newMessages: Message[]) => {
-    setChats(prev =>
-      prev.map(c => (c.id === chatId ? { ...c, messages: newMessages } : c))
-    );
-    setCurrentChat(prev => 
-      prev?.id === chatId ? { ...prev, messages: newMessages } : prev
-    );
   };
 
   return (
-    <div className="app-container">
-      <Sidebar 
-        chats={chats} 
-        selectChat={selectChat} 
-        newChat={newChat}
-        currentChatId={currentChat?.id}
-      />
-      <div className="chat-container">
-        {currentChat ? (
-          <Chat 
-            chatId={currentChat.id} 
-            messages={currentChat.messages} 
-            updateMessages={updateMessages} 
+    <Router>
+      <div className="">
+        <Routes>
+          <Route 
+            path="/" 
+            element={
+              <Dashboard
+                agents={agents}
+                onNewAgent={handleNewAgent}
+              />
+            } 
           />
-        ) : (
-          <div className="welcome-screen">
-            <h2>Welcome to Chat</h2>
-            <p>Select a chat or create a new one to get started</p>
-            <button onClick={newChat} className="button">
-              Start New Chat
-            </button>
-          </div>
-        )}
+          <Route 
+            path="/agent/:agentId" 
+            element={<AgentChatPage />} 
+          />
+        </Routes>
       </div>
-    </div>
+    </Router>
   );
 };
 

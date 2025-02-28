@@ -29,20 +29,20 @@ const AgentPopup: React.FC<AgentPopupProps> = ({ onClose, onSubmit }) => {
   return (
     <>
     <div className='popup'>
-      <div className="bg-gray-800 rounded-lg p-6 w-full max-w-md relative">
+      <div className="">
         <button
           onClick={onClose}
-          className="absolute top-4 right-4 text-gray-400 hover:text-white"
+          className=""
           aria-label="Close popup"
         >
           <FiX size={24} />
         </button>
 
-        <h2 className="text-xl font-bold mb-6">Create New Agent</h2>
+        <h2 className="">Create New Agent</h2>
 
         <form onSubmit={handleSubmit} >
-          <div className="mb-4">
-            <label htmlFor="name" className="block text-sm font-medium mb-2">
+          <div className="">
+            <label htmlFor="name" className="">
               Agent Name *
             </label>
             <input
@@ -50,14 +50,14 @@ const AgentPopup: React.FC<AgentPopupProps> = ({ onClose, onSubmit }) => {
               type="text"
               value={name}
               onChange={(e) => setName(e.target.value)}
-              className="w-full bg-gray-700 rounded-lg px-4 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500"
+              className=""
               placeholder="Enter agent name"
               required
             />
           </div>
 
-          <div className="mb-6">
-            <label htmlFor="description" className="block text-sm font-medium mb-2">
+          <div className="">
+            <label htmlFor="description" className="">
               Description
             </label>
             <textarea
@@ -69,8 +69,8 @@ const AgentPopup: React.FC<AgentPopupProps> = ({ onClose, onSubmit }) => {
               rows={3}
             />
           </div>
-          <div className="mb-6">
-            <label htmlFor="guidance" className="block text-sm font-medium mb-2">
+          <div className="">
+            <label htmlFor="guidance" className="">
               Guidance
             </label>
             <textarea
@@ -84,7 +84,7 @@ const AgentPopup: React.FC<AgentPopupProps> = ({ onClose, onSubmit }) => {
           </div>
           
 
-          <div className="flex justify-end gap-4">
+          <div className="">
             <button
               type="submit"
               className="btn"

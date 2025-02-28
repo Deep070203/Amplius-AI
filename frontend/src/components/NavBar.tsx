@@ -37,7 +37,7 @@ const NavBar: React.FC<NavBarProps> = ({
       <nav className="nav">
         <button
           onClick={() => navigate('/')}
-          className="flex items-center text-gray-700 hover:text-gray-900"
+          className=""
         >
           <FiArrowLeft size={24} />
         </button>
@@ -61,32 +61,32 @@ const NavBar: React.FC<NavBarProps> = ({
       </nav>
 
       {showSettings && (
-        <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center">
-          <div className="bg-white rounded-lg p-6 w-96">
-            <h2 className="text-xl font-semibold mb-4">Agent Settings</h2>
+        <div className="">
+          <div className="">
+            <h2 className="">Agent Settings</h2>
             
             <div className="mb-4">
-              <label className="block text-sm font-medium text-gray-700 mb-2">
+              <label className="">
                 Guidance
               </label>
               <textarea
                 value={editGuidance}
                 onChange={(e) => setEditGuidance(e.target.value)}
-                className="w-full p-2 border rounded-md"
+                className=""
                 rows={3}
               />
             </div>
 
-            <div className="flex justify-end gap-2">
+            <div className="">
               <button
                 onClick={() => setShowSettings(false)}
-                className="px-4 py-2 text-gray-600 hover:text-gray-800"
+                className=""
               >
                 Cancel
               </button>
               <button
                 onClick={handleSaveSettings}
-                className="px-4 py-2 bg-blue-500 text-white rounded-md hover:bg-blue-600"
+                className=""
               >
                 Save
               </button>

@@ -109,7 +109,7 @@ const Chat: React.FC<ChatProps> = ({ chatId, messages, updateMessages }) => {
           <button
             onClick={sendMessage}
             disabled={isLoading || !input.trim()}
-            className="bg-blue-500 text-white p-2 rounded-lg disabled:opacity-50"
+            className=""
           >
             <IoSendSharp size={20} />
           </button>

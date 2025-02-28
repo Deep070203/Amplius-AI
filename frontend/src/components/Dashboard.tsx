@@ -36,13 +36,13 @@ const Dashboard: React.FC<DashboardProps> = ({ agents, onNewAgent }) => {
         <div className="dashboard-wrapper">
         
             <div className="dashboard-container">
-                <div className="flex justify-between items-center mb-8">
+                <div className="">
                     <h1 className="dashboard-title">Your AI Agents</h1>
                     <button 
                     onClick={() => setShowPopup(true)}
                     className="add-button"
                     >
-                    <FiPlus size={20} className="inline-block mr-2" />
+                    <FiPlus size={20} className="" />
                     <span>New Agent</span>
                     </button>
                 </div>
@@ -52,10 +52,10 @@ const Dashboard: React.FC<DashboardProps> = ({ agents, onNewAgent }) => {
                     <div
                         key={agent.id}
                         onClick={() => handleAgentClick(agent.id)}
-                        className="text-left bg-gray-800 p-6 rounded-lg cursor-pointer hover:bg-gray-700 transition-colors w-full"
+                        className=""
                     >
                         <div className="agent-box">
-                        <div className="w-12 h-12 rounded-full bg-gray-600 flex items-center justify-center">
+                        <div className="">
                             <FiUser size={24} />
                         </div>
                         <h3>{agent.name}</h3>
@@ -67,8 +67,8 @@ const Dashboard: React.FC<DashboardProps> = ({ agents, onNewAgent }) => {
                     ))}
                     
                     {agents.length === 0 && (
-                    <div className="col-span-full text-center py-12">
-                        <p className="text-gray-400">No agents found. Create your first agent to get started!</p>
+                    <div className="">
+                        <p className="">No agents found. Create your first agent to get started!</p>
                     </div>
                     )}
                 </div>

@@ -73,49 +73,49 @@ const ContextPopup: React.FC<ContextPopupProps> = ({ onClose }) => {
 
   return (
     <div className='popup'>
-      <div className="bg-gray-800 rounded-lg p-6 w-full max-w-md relative">
+      <div className="">
         <button
           onClick={onClose}
-          className="absolute top-4 right-4 text-gray-400 hover:text-white"
+          className=""
           aria-label="Close popup"
         >
           <FiX size={24} />
         </button>
 
-        <h2 className="text-xl font-semibold mb-4">Upload Documents</h2>
+        <h2 className="">Upload Documents</h2>
         
         <input
           type="file"
           onChange={handleFileChange}
           multiple
-          className="mb-4"
+          className=""
           disabled={isLoading}
         />
 
 
         <button
           onClick={handleSubmit}
-          className="absolute top-4 right-4 text-gray-400 hover:text-white"
+          className=""
           aria-label="Add"
         >
             Add Documents
         </button>
         {isLoading && (
-          <p className="text-gray-400 mb-4">Uploading documents...</p>
+          <p className="">Uploading documents...</p>
         )}
 
-        <div className="mt-4">
-          <h3 className="text-lg font-semibold mb-2">Uploaded Documents:</h3>
+        <div className="">
+          <h3 className="">Uploaded Documents:</h3>
           {context.length > 0 ? (
-            <ul className="list-disc pl-5">
+            <ul className="">
               {context.map(file => (
-                <li key={file.filename} className="text-blue-300">
+                <li key={file.filename} className="">
                   {file.filename}
                 </li>
               ))}
             </ul>
           ) : (
-            <p className="text-gray-400">No documents uploaded yet</p>
+            <p className="">No documents uploaded yet</p>
           )}
         </div>
       </div>
