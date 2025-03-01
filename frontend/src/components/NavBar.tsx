@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { FiArrowLeft } from 'react-icons/fi';
 import ContextPopup from './ContextPopup';
+import GuidancePopup from './GuidancePopup';
 
 
 interface NavBarProps {
@@ -16,14 +17,8 @@ const NavBar: React.FC<NavBarProps> = ({
   onUpdateGuidance,
 }) => {
   const navigate = useNavigate();
-  const [showSettings, setShowSettings] = useState(false);
-  const [editGuidance, setEditGuidance] = useState(guidance);
+  const [showGuidance, setShowGuidance] = useState(false);
   const [showPopup, setShowPopup] = useState(false);
-
-  const handleSaveSettings = () => {
-    onUpdateGuidance(editGuidance);
-    setShowSettings(false);
-  };
 
 
   return (
@@ -31,6 +26,11 @@ const NavBar: React.FC<NavBarProps> = ({
     {showPopup && <ContextPopup onClose={() => setShowPopup(false)} />}{showPopup && (
       <ContextPopup
         onClose={() => setShowPopup(false)}
+      />
+    )}
+    {showGuidance && <GuidancePopup onClose={() => setShowGuidance(false)} />}{showGuidance && (
+      <GuidancePopup
+        onClose={() => setShowGuidance(false)}
       />
     )}
     <div className='topnav'>
@@ -51,7 +51,7 @@ const NavBar: React.FC<NavBarProps> = ({
               <span>Context</span>
               </button>
           <button
-            onClick={() => setShowSettings(true)}
+            onClick={() => setShowGuidance(true)}
             className="nav-button"
           >
             <span className="ml-2">Guidance</span>
@@ -60,40 +60,7 @@ const NavBar: React.FC<NavBarProps> = ({
         
       </nav>
 
-      {showSettings && (
-        <div className="">
-          <div className="">
-            <h2 className="">Agent Settings</h2>
-            
-            <div className="mb-4">
-              <label className="">
-                Guidance
-              </label>
-              <textarea
-                value={editGuidance}
-                onChange={(e) => setEditGuidance(e.target.value)}
-                className=""
-                rows={3}
-              />
-            </div>
-
-            <div className="">
-              <button
-                onClick={() => setShowSettings(false)}
-                className=""
-              >
-                Cancel
-              </button>
-              <button
-                onClick={handleSaveSettings}
-                className=""
-              >
-                Save
-              </button>
-            </div>
-          </div>
-        </div>
-      )}
+      
     </div>
     </>
   );

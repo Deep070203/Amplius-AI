@@ -53,6 +53,16 @@ export const api = {
         }
     },
 
+    async getAgentGuideance(agentId: string): Promise<string> {
+        const response = await axios.get(`${API_URL}/agents/${agentId}/guidance`);
+        return response.data;
+    },
+
+    async updateAgentGuidance(agentId: string, guidance: string): Promise<Agent> {
+        const response = await axios.patch(`${API_URL}/agents/${agentId}/guidance`, { guidance });
+        return response.data;
+    },
+
     // Document endpoints
     async addDocument(agentId: string, filename: string): Promise<Document> {
         const response = await axios.post(`${API_URL}/agents/${agentId}/documents`, { agentId, filename });
