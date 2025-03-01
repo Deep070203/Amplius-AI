@@ -181,6 +181,16 @@ app.get("/agents/:agentId/documents", async (req, res) => {
     }
 });
 
+app.get("/agents/:agentId/guidance", async (req, res) => {
+    try {
+        const agent = await dbService.getAgent(req.params.agentId);
+        res.json(agent!.guidance);
+    } catch (error) {
+        console.error("Error fetching guidance:", error);
+        res.status(500).json({ error: "Failed to fetch guidance" });
+    }
+});
+
 const upload = multer({ dest: "uploads/" }); // This will save files in 'uploads/' folder
 
 // Handle file uploads

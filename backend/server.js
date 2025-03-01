@@ -163,6 +163,16 @@ app.get("/agents/:agentId/documents", (req, res) => __awaiter(void 0, void 0, vo
         res.status(500).json({ error: "Failed to add document" });
     }
 }));
+app.get("/agents/:agentId/guidance", (req, res) => __awaiter(void 0, void 0, void 0, function* () {
+    try {
+        const agent = yield db_1.dbService.getAgent(req.params.agentId);
+        res.json(agent.guidance);
+    }
+    catch (error) {
+        console.error("Error fetching guidance:", error);
+        res.status(500).json({ error: "Failed to fetch guidance" });
+    }
+}));
 const upload = (0, multer_1.default)({ dest: "uploads/" }); // This will save files in 'uploads/' folder
 // Handle file uploads
 app.post("/upload", upload.single("file"), (req, res) => __awaiter(void 0, void 0, void 0, function* () {
