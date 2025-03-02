@@ -23,6 +23,17 @@ export const dbService = {
     });
   },
 
+  async updateAgent(id: string, data: {
+    name?: string;
+    description?: string;
+    guidance?: string;
+  }) {
+    return prisma.agent.update({
+      where: { id },
+      data,
+    });
+  },
+
   async getAllAgents() {
     return prisma.agent.findMany();
   },

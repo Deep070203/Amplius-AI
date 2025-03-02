@@ -23,6 +23,12 @@ interface DocumentContext {
     source: string;
 }
 
+interface AgentUpdates {
+    name?: string;
+    description?: string;
+    guidance?: string;
+}
+
 // Agent endpoints
 app.post("/agents", async (req, res) => {
     try {
@@ -52,6 +58,38 @@ app.get("/agents/:agentId/chats", async (req, res) => {
     } catch (error) {
         console.error("Error fetching chats:", error);
         res.status(500).json({ error: "Failed to fetch chats" });
+    }
+});
+
+app.patch("/agents/:agentId", async (req, res) => {
+    try {
+        const { agentId } = req.params;
+        const updates = req.body;
+        
+        // Validate that at least one field is being updated
+        // if (Object.keys(updates).length === 0) {
+        //    return res.status(400).json({ error: "No update fields provided" });
+        // }
+
+        // Only allow updates to valid fields
+        const validUpdates: AgentUpdates = {
+            name: updates.name,
+            description: updates.description,
+            guidance: updates.guidance
+        };
+
+        // Remove undefined fields
+        (Object.keys(validUpdates) as (keyof AgentUpdates)[]).forEach(key => {
+            if (validUpdates[key] === undefined) {
+                delete validUpdates[key];
+            }
+        });
+
+        const updatedAgent = await dbService.updateAgent(agentId, validUpdates);
+        res.json(updatedAgent);
+    } catch (error) {
+        console.error("Error updating agent:", error);
+        res.status(500).json({ error: "Failed to update agent" });
     }
 });
 

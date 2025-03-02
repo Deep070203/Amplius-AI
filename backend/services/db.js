@@ -35,6 +35,14 @@ exports.dbService = {
             });
         });
     },
+    updateAgent(id, data) {
+        return __awaiter(this, void 0, void 0, function* () {
+            return prisma.agent.update({
+                where: { id },
+                data,
+            });
+        });
+    },
     getAllAgents() {
         return __awaiter(this, void 0, void 0, function* () {
             return prisma.agent.findMany();

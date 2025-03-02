@@ -59,6 +59,34 @@ app.get("/agents/:agentId/chats", (req, res) => __awaiter(void 0, void 0, void 0
         res.status(500).json({ error: "Failed to fetch chats" });
     }
 }));
+app.patch("/agents/:agentId", (req, res) => __awaiter(void 0, void 0, void 0, function* () {
+    try {
+        const { agentId } = req.params;
+        const updates = req.body;
+        // Validate that at least one field is being updated
+        // if (Object.keys(updates).length === 0) {
+        //    return res.status(400).json({ error: "No update fields provided" });
+        // }
+        // Only allow updates to valid fields
+        const validUpdates = {
+            name: updates.name,
+            description: updates.description,
+            guidance: updates.guidance
+        };
+        // Remove undefined fields
+        Object.keys(validUpdates).forEach(key => {
+            if (validUpdates[key] === undefined) {
+                delete validUpdates[key];
+            }
+        });
+        const updatedAgent = yield db_1.dbService.updateAgent(agentId, validUpdates);
+        res.json(updatedAgent);
+    }
+    catch (error) {
+        console.error("Error updating agent:", error);
+        res.status(500).json({ error: "Failed to update agent" });
+    }
+}));
 // Chat endpoints
 app.post("/chat", (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     const { chatId, messages } = req.body;
