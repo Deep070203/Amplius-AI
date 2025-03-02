@@ -19,8 +19,8 @@ const GuidancePopup: React.FC<GuidancePopupProps> = ({ onClose }) => {
   const loadGuidance = async () => {
     try {
       if (agentId) {
-        const gd = await api.getAgentGuideance(agentId);
-        setGuidance(gd);
+        const gd = await api.getAgent(agentId);
+        setGuidance(gd.guidance!);
       }
       
     } catch (error) {
@@ -33,7 +33,7 @@ const GuidancePopup: React.FC<GuidancePopupProps> = ({ onClose }) => {
     if (!agentId) return;
 
     try {
-        await api.updateAgentGuidance(agentId, guidance);
+        await api.updateAgent(agentId, {guidance});
     } catch (error) {
         console.error("Error updating guidance: ", error);
     }

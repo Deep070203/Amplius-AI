@@ -45,16 +45,6 @@ const AgentChatPage: React.FC = () => {
     }
   };
 
-  const handleUpdateGuidance = async (newGuidance: string) => {
-    if (!agent || !agentId) return;
-    try {
-      await api.updateAgent(agentId, { guidance: newGuidance });
-      setAgent(prev => prev ? { ...prev, guidance: newGuidance } : null);
-    } catch (error) {
-      console.error("Error updating guidance:", error);
-    }
-  };
-
 
   const handleCreateChat = async () => {
     if (!agentId) return;
@@ -97,8 +87,6 @@ const AgentChatPage: React.FC = () => {
       {agent && (
         <NavBar
           agentName={agent.name}
-          guidance={agent.guidance??""}
-          onUpdateGuidance={handleUpdateGuidance}
         />
       )}
       <div className='app-container'>

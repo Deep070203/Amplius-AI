@@ -7,14 +7,10 @@ import GuidancePopup from './GuidancePopup';
 
 interface NavBarProps {
   agentName: string;
-  guidance: string;
-  onUpdateGuidance: (newGuidance: string) => void;
 }
 
 const NavBar: React.FC<NavBarProps> = ({
   agentName,
-  guidance,
-  onUpdateGuidance,
 }) => {
   const navigate = useNavigate();
   const [showGuidance, setShowGuidance] = useState(false);
@@ -38,6 +34,7 @@ const NavBar: React.FC<NavBarProps> = ({
         <button
           onClick={() => navigate('/')}
           className=""
+          aria-label="Back to dashboard"
         >
           <FiArrowLeft size={24} />
         </button>

@@ -90,6 +90,7 @@ const ContextPopup: React.FC<ContextPopupProps> = ({ onClose }) => {
           multiple
           className=""
           disabled={isLoading}
+          aria-label="Select files"
         />
 
 

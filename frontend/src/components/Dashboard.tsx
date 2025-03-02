@@ -54,7 +54,7 @@ const Dashboard: React.FC<DashboardProps> = ({ agents, onNewAgent }) => {
                         onClick={() => handleAgentClick(agent.id)}
                         className=""
                     >
-                        <div className="agent-box">
+                      <div className="agent-box">
                         <div className="">
                             <FiUser size={24} />
                         </div>

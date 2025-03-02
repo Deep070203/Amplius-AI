@@ -20,7 +20,7 @@ export const api = {
         return response.data;
     },
     
-    async updateAgent(agentId: string, updates: { guidance?: string; context?: string }): Promise<Agent> {
+    async updateAgent(agentId: string, updates: { name?: string; description?: string; guidance?: string }): Promise<Agent> {
         const response = await axios.patch(`${API_URL}/agents/${agentId}`, updates);
         return response.data;
     },
@@ -53,15 +53,6 @@ export const api = {
         }
     },
 
-    async getAgentGuideance(agentId: string): Promise<string> {
-        const response = await axios.get(`${API_URL}/agents/${agentId}/guidance`);
-        return response.data;
-    },
-
-    async updateAgentGuidance(agentId: string, guidance: string): Promise<Agent> {
-        const response = await axios.patch(`${API_URL}/agents/${agentId}/guidance`, { guidance });
-        return response.data;
-    },
 
     // Document endpoints
     async addDocument(agentId: string, filename: string): Promise<Document> {

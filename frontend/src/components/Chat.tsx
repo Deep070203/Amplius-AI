@@ -110,6 +110,7 @@ const Chat: React.FC<ChatProps> = ({ chatId, messages, updateMessages }) => {
             onClick={sendMessage}
             disabled={isLoading || !input.trim()}
             className=""
+            aria-label="Send message"
           >
             <IoSendSharp size={20} />
           </button>
