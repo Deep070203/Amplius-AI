@@ -4,14 +4,15 @@ import { Document } from '../types';
 
 interface AgentPopupProps {
   onClose: () => void;
-  onSubmit: (agentData: { name: string; description: string; guidance: string; context: Document[] } ) => void; // name: string, description: string ) => void;
+  onSubmit: (agentData: { name: string; description: string; guidance?: string; context?: Document[] }) => void;
+  initialData?: { name: string; description?: string; guidance?: string };
+  isEditing?: boolean;
 }
 
-const AgentPopup: React.FC<AgentPopupProps> = ({ onClose, onSubmit }) => {
-  const [name, setName] = useState('');
-  const [description, setDescription] = useState('');
-  const [guidance, setGuidance] = useState('');
-  
+const AgentPopup: React.FC<AgentPopupProps> = ({ onClose, onSubmit, initialData, isEditing }) => {
+  const [name, setName] = useState(initialData?.name || '');
+  const [description, setDescription] = useState(initialData?.description || '');
+  const [guidance, setGuidance] = useState(initialData?.guidance || '');
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
@@ -27,7 +28,6 @@ const AgentPopup: React.FC<AgentPopupProps> = ({ onClose, onSubmit }) => {
   };
 
   return (
-    <>
     <div className='popup'>
       <div className="">
         <button
@@ -38,9 +38,9 @@ const AgentPopup: React.FC<AgentPopupProps> = ({ onClose, onSubmit }) => {
           <FiX size={24} />
         </button>
 
-        <h2 className="">Create New Agent</h2>
+        <h2 className="">{isEditing ? 'Edit Agent' : 'Create New Agent'}</h2>
 
-        <form onSubmit={handleSubmit} >
+        <form onSubmit={handleSubmit}>
           <div className="">
             <label htmlFor="name" className="">
               Agent Name *
@@ -69,20 +69,22 @@ const AgentPopup: React.FC<AgentPopupProps> = ({ onClose, onSubmit }) => {
               rows={3}
             />
           </div>
-          <div className="">
-            <label htmlFor="guidance" className="">
-              Guidance
-            </label>
-            <textarea
-              id="guidance"
-              value={guidance}
-              onChange={(e) => setGuidance(e.target.value)}
-              className="textarea"
-              placeholder="Enter agent guidance"
-              rows={1}
-            />
-          </div>
-          
+
+          {!isEditing && (
+            <div className="">
+              <label htmlFor="guidance" className="">
+                Guidance
+              </label>
+              <textarea
+                id="guidance"
+                value={guidance}
+                onChange={(e) => setGuidance(e.target.value)}
+                className="textarea"
+                placeholder="Enter agent guidance"
+                rows={1}
+              />
+            </div>
+          )}
 
           <div className="">
             <button
@@ -90,7 +92,7 @@ const AgentPopup: React.FC<AgentPopupProps> = ({ onClose, onSubmit }) => {
               className="btn"
               disabled={!name.trim()}
             >
-              Create Agent
+              {isEditing ? 'Save Changes' : 'Create Agent'}
             </button>
             <button
               type="button"
@@ -103,7 +105,6 @@ const AgentPopup: React.FC<AgentPopupProps> = ({ onClose, onSubmit }) => {
         </form>
       </div>
     </div>
-  </>
   );
 };
 

@@ -80,5 +80,9 @@ export const api = {
         }
 
         return response.json();
-    }
+    },
+
+    async deleteAgent(agentId: string): Promise<void> {
+        await axios.delete(`${API_URL}/agents/${agentId}`);
+    },
 };
