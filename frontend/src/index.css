@@ -264,8 +264,6 @@ body {
 .agent-box {
   display: flex;
   flex-direction: column;
-  justify-content: flex-start;
-  align-items: center;
   gap: 0.5rem;
   border-style: dashed;
   margin: 10px;
@@ -283,7 +281,61 @@ body {
 .agent-container {
   display: flex;
   flex-wrap: wrap;
-  justify-content: flex-start;
+}
+
+.agent-box .top-section {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.agent-box .details{
+  display: flex;
+  justify-self: center;
+  flex-direction: column;
+  align-items: center;
+}
+
+
+.menu-button {
+  background: none;
+  border: none;
+  top: calc(var(--spacing) * 2);
+  right: 4px;
+  cursor: pointer;
+  padding: 4px;
+  border-radius: 4px;
+  transition: background-color 0.2s;
+}
+
+.menu-button:hover {
+  background-color: rgba(0, 0, 0, 0.1);
+}
+
+.menu-dropdown {
+  background: white;
+  border: 1px solid #e2e8f0;
+  border-radius: 6px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+  min-width: 120px;
+  z-index: 10;
+}
+
+.menu-item {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  width: 100%;
+  padding: 8px 12px;
+  border: none;
+  background: none;
+  cursor: pointer;
+  text-align: left;
+  transition: background-color 0.2s;
+}
+
+.menu-item:hover {
+  background-color: #f7fafc;
 }
 
 /* Popup Styles */
