@@ -34,6 +34,12 @@ export const dbService = {
     });
   },
 
+  async deleteAgent(id: string) {
+    return prisma.agent.delete({
+      where: { id },
+    });
+  },
+
   async getAllAgents() {
     return prisma.agent.findMany();
   },

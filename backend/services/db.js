@@ -43,6 +43,13 @@ exports.dbService = {
             });
         });
     },
+    deleteAgent(id) {
+        return __awaiter(this, void 0, void 0, function* () {
+            return prisma.agent.delete({
+                where: { id },
+            });
+        });
+    },
     getAllAgents() {
         return __awaiter(this, void 0, void 0, function* () {
             return prisma.agent.findMany();

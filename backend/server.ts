@@ -93,6 +93,17 @@ app.patch("/agents/:agentId", async (req, res) => {
     }
 });
 
+app.delete("/agents/:agentId", async (req, res) => {
+    try {
+        const { agentId } = req.params;
+        await dbService.deleteAgent(agentId);
+        res.status(204).send();
+    } catch (error) {
+        console.error("Error deleting agent:", error);
+        res.status(500).json({ error: "Failed to delete agent" });
+    }
+});
+
 // Chat endpoints
 app.post("/chat", async (req, res) => {
     const { chatId, messages } = req.body;

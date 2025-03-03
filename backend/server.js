@@ -87,6 +87,17 @@ app.patch("/agents/:agentId", (req, res) => __awaiter(void 0, void 0, void 0, fu
         res.status(500).json({ error: "Failed to update agent" });
     }
 }));
+app.delete("/agents/:agentId", (req, res) => __awaiter(void 0, void 0, void 0, function* () {
+    try {
+        const { agentId } = req.params;
+        yield db_1.dbService.deleteAgent(agentId);
+        res.status(204).send();
+    }
+    catch (error) {
+        console.error("Error deleting agent:", error);
+        res.status(500).json({ error: "Failed to delete agent" });
+    }
+}));
 // Chat endpoints
 app.post("/chat", (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     const { chatId, messages } = req.body;
