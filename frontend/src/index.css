@@ -283,10 +283,6 @@ body {
   flex-wrap: wrap;
 }
 
-.agent-card {
-  position: relative;
-}
-
 .agent-box .top-section {
   display: flex;
   align-items: center;
