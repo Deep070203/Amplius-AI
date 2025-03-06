@@ -156,7 +156,7 @@ app.post("/chat", async (req, res) => {
         const response = await axios.post(
             GROQ_API_URL,
             {
-                model: "mixtral-8x7b-32768",
+                model: "llama3-70b-8192",
                 messages: fullMessages,
                 temperature: 0.7
             },
