@@ -135,7 +135,7 @@ app.post("/chat", (req, res) => __awaiter(void 0, void 0, void 0, function* () {
         // Store user message
         yield db_1.dbService.addMessage(chatId, messages[messages.length - 1]);
         const response = yield axios_1.default.post(GROQ_API_URL, {
-            model: "mixtral-8x7b-32768",
+            model: "llama3-70b-8192",
             messages: fullMessages,
             temperature: 0.7
         }, { headers: { Authorization: `Bearer ${GROQ_API_KEY}` } });
