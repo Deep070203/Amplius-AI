@@ -90,12 +90,14 @@ const AgentChatPage: React.FC = () => {
         />
       )}
       <div className='app-container'>
-        <Sidebar
-          chats={chats}
-          currentChatId={currentChat?.id ?? null}
-          selectChat={handleChatSelect}
-          newChat={handleCreateChat}
-        />
+        <div className='sidebar-container'>
+          {<Sidebar
+            chats={chats}
+            currentChatId={currentChat?.id ?? null}
+            selectChat={handleChatSelect}
+            newChat={handleCreateChat}
+          />}
+        </div>
         <div className='chat-container'>
           {currentChat ? (
             <Chat

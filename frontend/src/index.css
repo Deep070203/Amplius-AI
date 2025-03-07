@@ -116,6 +116,10 @@ body {
   background-color: radial-gradient(white 1px, transparent 0);
 }
 
+.sidebar-container {
+  height: 92vh;
+}
+
 /* Chat Styles */
 .chat-container {
   display: flex;
