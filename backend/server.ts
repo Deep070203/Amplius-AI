@@ -8,6 +8,9 @@ import path from "path";
 import pdfParse from "pdf-parse";
 import { dbService } from './services/db';
 import { DocumentProcessor } from './services/documentProcessor';
+import { mcpClient } from './mcp/client';
+import { applyToolCalls, mapToolstoGroqTools } from './mcp/groqtool_utils';
+import Groq from "groq-sdk";
 
 dotenv.config();
 
@@ -15,6 +18,7 @@ const app = express();
 app.use(express.json());
 app.use(cors());
 
+const groq = new Groq({ apiKey: process.env.GROQ_API_KEY });
 const GROQ_API_URL = "https://api.groq.com/openai/v1/chat/completions";
 const GROQ_API_KEY = process.env.GROQ_API_KEY || "";
 
@@ -137,7 +141,12 @@ app.post("/chat", async (req, res) => {
         // Create system message with guidance and context
         const systemMessage = {
             role: "system",
-            content: `${agent!.guidance || "You are a helpful AI assistant."}
+            content: `You are an AI assistant. You have the ability to create code and mermaid diagram.
+            Write the "explanation" of code in plain simple English.
+            Also, Only if the user asks to create a Flowchart, Sequence, Gantt, Class, State, Mindmap, Quadrant, Pie Chart, you should use mermaid syntax which is <code class="language-mermaid"> </code>.
+            Guidance:
+             ${agent!.guidance || "Be helpful."}
+            Context:
              ${
                  context.length > 0 
                      ? `Context from relevant documents:\n${context.map(c => 
@@ -156,7 +165,7 @@ app.post("/chat", async (req, res) => {
         const response = await axios.post(
             GROQ_API_URL,
             {
-                model: "llama3-70b-8192",
+                model: "llama-3.1-8b-instant",
                 messages: fullMessages,
                 temperature: 0.7
             },
@@ -171,6 +180,18 @@ app.post("/chat", async (req, res) => {
             ...response.data,
             sources: context.map(c => c.source)
         });
+        const mcpTools = await mcpClient.listTools();
+        const groqTools = mapToolstoGroqTools(mcpTools);
+        console.log(groqTools);
+
+        const testres = await groq.chat.completions.create({
+            model: "llama-3.1-8b-instant",
+            messages: fullMessages,
+            tools: groqTools,
+            temperature: 0.7
+        });
+        const toolCallResponse = await applyToolCalls(testres);
+        console.log(toolCallResponse);
     } catch (error) {
         console.error("Error:", error);
         res.status(500).json({ error: "Failed to process request" });

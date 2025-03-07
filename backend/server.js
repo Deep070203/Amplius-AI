@@ -21,10 +21,14 @@ const fs_1 = __importDefault(require("fs"));
 const pdf_parse_1 = __importDefault(require("pdf-parse"));
 const db_1 = require("./services/db");
 const documentProcessor_1 = require("./services/documentProcessor");
+const client_1 = require("./mcp/client");
+const groqtool_utils_1 = require("./mcp/groqtool_utils");
+const groq_sdk_1 = __importDefault(require("groq-sdk"));
 dotenv_1.default.config();
 const app = (0, express_1.default)();
 app.use(express_1.default.json());
 app.use((0, cors_1.default)());
+const groq = new groq_sdk_1.default({ apiKey: process.env.GROQ_API_KEY });
 const GROQ_API_URL = "https://api.groq.com/openai/v1/chat/completions";
 const GROQ_API_KEY = process.env.GROQ_API_KEY || "";
 // Agent endpoints
@@ -124,7 +128,12 @@ app.post("/chat", (req, res) => __awaiter(void 0, void 0, void 0, function* () {
         // Create system message with guidance and context
         const systemMessage = {
             role: "system",
-            content: `${agent.guidance || "You are a helpful AI assistant."}
+            content: `You are an AI assistant. You have the ability to create code and mermaid diagram.
+            Write the "explanation" of code in plain simple English.
+            Also, Only if the user asks to create a Flowchart, Sequence, Gantt, Class, State, Mindmap, Quadrant, Pie Chart, you should use mermaid syntax which is <code class="language-mermaid"> </code>.
+            Guidance:
+             ${agent.guidance || "Be helpful."}
+            Context:
              ${context.length > 0
                 ? `Context from relevant documents:\n${context.map(c => `Source: ${c.source}\nContent: ${c.content}\n`).join('\n')}\n
                        When using information from the context, cite the source.`
@@ -135,7 +144,7 @@ app.post("/chat", (req, res) => __awaiter(void 0, void 0, void 0, function* () {
         // Store user message
         yield db_1.dbService.addMessage(chatId, messages[messages.length - 1]);
         const response = yield axios_1.default.post(GROQ_API_URL, {
-            model: "llama3-70b-8192",
+            model: "llama-3.1-8b-instant",
             messages: fullMessages,
             temperature: 0.7
         }, { headers: { Authorization: `Bearer ${GROQ_API_KEY}` } });
@@ -143,6 +152,17 @@ app.post("/chat", (req, res) => __awaiter(void 0, void 0, void 0, function* () {
         const assistantMessage = response.data.choices[0].message;
         yield db_1.dbService.addMessage(chatId, assistantMessage);
         res.json(Object.assign(Object.assign({}, response.data), { sources: context.map(c => c.source) }));
+        const mcpTools = yield client_1.mcpClient.listTools();
+        const groqTools = (0, groqtool_utils_1.mapToolstoGroqTools)(mcpTools);
+        console.log(groqTools);
+        const testres = yield groq.chat.completions.create({
+            model: "llama-3.1-8b-instant",
+            messages: fullMessages,
+            tools: groqTools,
+            temperature: 0.7
+        });
+        const toolCallResponse = yield (0, groqtool_utils_1.applyToolCalls)(testres);
+        console.log(toolCallResponse);
     }
     catch (error) {
         console.error("Error:", error);
