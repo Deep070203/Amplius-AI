@@ -141,8 +141,9 @@ app.post("/chat", async (req, res) => {
         // Create system message with guidance and context
         const systemMessage = {
             role: "system",
-            content: `You are an AI assistant. You have the ability to create code and mermaid diagram.
-            Write the "explanation" of code in plain simple English.
+            content: `You are an AI assistant. You have the ability to create code and mermaid diagram. You also have the ability to use tools. If you did use a tool, check the last meesage and if the role is tool
+            then see its "content" and answer accordingly.
+            After you write the code, write the "explanation" of that code in plain simple English (you do not need to highlight the variables or functions in <code> </code>).
             Also, Only if the user asks to create a Flowchart, Sequence, Gantt, Class, State, Mindmap, Quadrant, Pie Chart, you should use mermaid syntax which is <code class="language-mermaid"> </code>.
             Guidance:
              ${agent!.guidance || "Be helpful."}
@@ -162,27 +163,19 @@ app.post("/chat", async (req, res) => {
         // Store user message
         await dbService.addMessage(chatId, messages[messages.length - 1]);
 
-        const response = await axios.post(
-            GROQ_API_URL,
-            {
-                model: "llama-3.1-8b-instant",
-                messages: fullMessages,
-                temperature: 0.7
-            },
-            { headers: { Authorization: `Bearer ${GROQ_API_KEY}` } }
-        );
+        // const response = await axios.post(
+        //     GROQ_API_URL,
+        //     {
+        //         model: "llama-3.1-8b-instant",
+        //         messages: fullMessages,
+        //         temperature: 0.7
+        //     },
+        //     { headers: { Authorization: `Bearer ${GROQ_API_KEY}` } }
+        // );
 
-        // Store assistant message
-        const assistantMessage = response.data.choices[0].message;
-        await dbService.addMessage(chatId, assistantMessage);
-
-        res.json({
-            ...response.data,
-            sources: context.map(c => c.source)
-        });
         const mcpTools = await mcpClient.listTools();
         const groqTools = mapToolstoGroqTools(mcpTools);
-        console.log(groqTools);
+        // console.log(groqTools);
 
         const testres = await groq.chat.completions.create({
             model: "llama-3.1-8b-instant",
@@ -191,7 +184,49 @@ app.post("/chat", async (req, res) => {
             temperature: 0.7
         });
         const toolCallResponse = await applyToolCalls(testres);
-        console.log(toolCallResponse);
+        
+        if (toolCallResponse.length === 0){
+            console.log(testres.choices[0].message);
+            // Store assistant message
+            const assistantMessage = testres.choices[0].message;
+            await dbService.addMessage(chatId, assistantMessage as any);
+
+            // console.log(assistantMessage);
+
+            res.json({
+                ...testres,
+                sources: context.map(c => c.source)
+            });
+        }
+        else{
+            // console.log(toolCallResponse);
+            for (const response of toolCallResponse){
+                fullMessages.push({
+                    role: "assistant",
+                    content: response.content
+                });
+            }
+
+            console.log(fullMessages[fullMessages.length - 1]);
+
+            const secondres = await groq.chat.completions.create({
+                model: "llama-3.1-8b-instant",
+                messages: fullMessages,
+                temperature: 0.7
+            });
+
+            // Store assistant message
+            const assistantMessage = secondres.choices[0].message;
+            await dbService.addMessage(chatId, assistantMessage as any);
+
+            // console.log(assistantMessage);
+
+            res.json({
+                ...secondres,
+                sources: context.map(c => c.source)
+            });
+        }
+        
     } catch (error) {
         console.error("Error:", error);
         res.status(500).json({ error: "Failed to process request" });

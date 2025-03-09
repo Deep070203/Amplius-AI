@@ -15,7 +15,6 @@ Object.defineProperty(exports, "__esModule", { value: true });
 const express_1 = __importDefault(require("express"));
 const cors_1 = __importDefault(require("cors"));
 const dotenv_1 = __importDefault(require("dotenv"));
-const axios_1 = __importDefault(require("axios"));
 const multer_1 = __importDefault(require("multer"));
 const fs_1 = __importDefault(require("fs"));
 const pdf_parse_1 = __importDefault(require("pdf-parse"));
@@ -128,8 +127,9 @@ app.post("/chat", (req, res) => __awaiter(void 0, void 0, void 0, function* () {
         // Create system message with guidance and context
         const systemMessage = {
             role: "system",
-            content: `You are an AI assistant. You have the ability to create code and mermaid diagram.
-            Write the "explanation" of code in plain simple English.
+            content: `You are an AI assistant. You have the ability to create code and mermaid diagram. You also have the ability to use tools. If you did use a tool, check the last meesage and if the role is tool
+            then see its "content" and answer accordingly.
+            After you write the code, write the "explanation" of that code in plain simple English (you do not need to highlight the variables or functions in <code> </code>).
             Also, Only if the user asks to create a Flowchart, Sequence, Gantt, Class, State, Mindmap, Quadrant, Pie Chart, you should use mermaid syntax which is <code class="language-mermaid"> </code>.
             Guidance:
              ${agent.guidance || "Be helpful."}
@@ -143,18 +143,18 @@ app.post("/chat", (req, res) => __awaiter(void 0, void 0, void 0, function* () {
         const fullMessages = [systemMessage, ...messages];
         // Store user message
         yield db_1.dbService.addMessage(chatId, messages[messages.length - 1]);
-        const response = yield axios_1.default.post(GROQ_API_URL, {
-            model: "llama-3.1-8b-instant",
-            messages: fullMessages,
-            temperature: 0.7
-        }, { headers: { Authorization: `Bearer ${GROQ_API_KEY}` } });
-        // Store assistant message
-        const assistantMessage = response.data.choices[0].message;
-        yield db_1.dbService.addMessage(chatId, assistantMessage);
-        res.json(Object.assign(Object.assign({}, response.data), { sources: context.map(c => c.source) }));
+        // const response = await axios.post(
+        //     GROQ_API_URL,
+        //     {
+        //         model: "llama-3.1-8b-instant",
+        //         messages: fullMessages,
+        //         temperature: 0.7
+        //     },
+        //     { headers: { Authorization: `Bearer ${GROQ_API_KEY}` } }
+        // );
         const mcpTools = yield client_1.mcpClient.listTools();
         const groqTools = (0, groqtool_utils_1.mapToolstoGroqTools)(mcpTools);
-        console.log(groqTools);
+        // console.log(groqTools);
         const testres = yield groq.chat.completions.create({
             model: "llama-3.1-8b-instant",
             messages: fullMessages,
@@ -162,7 +162,34 @@ app.post("/chat", (req, res) => __awaiter(void 0, void 0, void 0, function* () {
             temperature: 0.7
         });
         const toolCallResponse = yield (0, groqtool_utils_1.applyToolCalls)(testres);
-        console.log(toolCallResponse);
+        if (toolCallResponse.length === 0) {
+            console.log(testres.choices[0].message);
+            // Store assistant message
+            const assistantMessage = testres.choices[0].message;
+            yield db_1.dbService.addMessage(chatId, assistantMessage);
+            // console.log(assistantMessage);
+            res.json(Object.assign(Object.assign({}, testres), { sources: context.map(c => c.source) }));
+        }
+        else {
+            // console.log(toolCallResponse);
+            for (const response of toolCallResponse) {
+                fullMessages.push({
+                    role: "assistant",
+                    content: response.content
+                });
+            }
+            console.log(fullMessages[fullMessages.length - 1]);
+            const secondres = yield groq.chat.completions.create({
+                model: "llama-3.1-8b-instant",
+                messages: fullMessages,
+                temperature: 0.7
+            });
+            // Store assistant message
+            const assistantMessage = secondres.choices[0].message;
+            yield db_1.dbService.addMessage(chatId, assistantMessage);
+            // console.log(assistantMessage);
+            res.json(Object.assign(Object.assign({}, secondres), { sources: context.map(c => c.source) }));
+        }
     }
     catch (error) {
         console.error("Error:", error);
