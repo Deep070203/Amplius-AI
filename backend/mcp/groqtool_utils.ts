@@ -19,9 +19,7 @@ export type ToolsListServerResponseType = {
     }[];
 }
 
-export type ResponseType = 
-    | Groq.Chat.ChatCompletion
-    | Groq.Chat.ChatCompletionToolMessageParam;
+export type ResponseType = Groq.Chat.ChatCompletionToolMessageParam
 
 export const mapToolstoGroqTools = (toolList: ToolsListServerResponseType): GroqToolsInputType[] => {
     return toolList.tools.map((tool) => ({
