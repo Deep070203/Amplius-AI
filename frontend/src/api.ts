@@ -42,14 +42,14 @@ export const api = {
 
     async sendMessage(chatId: string, messages: Message[]): Promise<Message> {
         try {
-        const response = await axios.post(`${API_URL}/chat`, { 
-            chatId, 
-            messages 
-        });
-        return response.data.choices[0].message;
+            const response = await axios.post(`${API_URL}/chat`, { 
+                chatId, 
+                messages 
+            });
+            return response.data.choices[0].message;
         } catch (error) {
-        console.error("Error sending message:", error);
-        return { role: "assistant", content: "Error: Failed to get response." };
+            console.error("Error sending message:", error);
+            return { role: "assistant", content: "Error: Failed to get response." };
         }
     },
 

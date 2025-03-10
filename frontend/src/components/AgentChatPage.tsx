@@ -62,9 +62,11 @@ const AgentChatPage: React.FC = () => {
     const selected = chats.find(c => c.id === id);
     if (selected) {
       setCurrentChat(selected);
+      console.log("selected ", selected);
       if (selected.messages.length === 0) {
         try {
           const messages = await api.getChatMessages(id);
+          console.log("messages: ", messages);
           updateMessages(id, messages);
         } catch (error) {
           console.error("Error loading messages:", error);
