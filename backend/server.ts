@@ -121,6 +121,8 @@ app.post("/chat", async (req, res) => {
         if (!agent){
             console.log("Agent not found");
         }
+        // console.log("message: ", messages);
+        // console.log("chat: ", chat);
         // Get the latest user message
         const userMessage = messages[messages.length - 1];
         
@@ -141,8 +143,7 @@ app.post("/chat", async (req, res) => {
         // Create system message with guidance and context
         const systemMessage = {
             role: "system",
-            content: `You are an AI assistant. You have the ability to create code and mermaid diagram. You also have the ability to use tools. If you did use a tool, check the last meesage and if the role is tool
-            then see its "content" and answer accordingly.
+            content: `You are an AI assistant. You have the ability to create code and mermaid diagram. You also have the ability to use tools. If the last message is by tool, then first print the "content" and thenjust explain what it did.
             After you write the code, write the "explanation" of that code in plain simple English (you do not need to highlight the variables or functions in <code> </code>).
             Also, Only if the user asks to create a Flowchart, Sequence, Gantt, Class, State, Mindmap, Quadrant, Pie Chart, you should use mermaid syntax which is <code class="language-mermaid"> </code>.
             Guidance:
@@ -156,10 +157,11 @@ app.post("/chat", async (req, res) => {
                      : ''
              }`
         };
-
+        const simplifiedMessages = messages.map(({ role, content }: any) => ({ role, content }));
         // Combine system message with user messages
-        const fullMessages = [systemMessage, ...messages];
+        const fullMessages = [systemMessage, ...simplifiedMessages];
         
+        // console.log("fullMessages: ", fullMessages);
         // Store user message
         await dbService.addMessage(chatId, messages[messages.length - 1]);
 
@@ -186,7 +188,7 @@ app.post("/chat", async (req, res) => {
         const toolCallResponse = await applyToolCalls(testres);
         
         if (toolCallResponse.length === 0){
-            console.log(testres.choices[0].message);
+            // console.log(testres.choices[0].message);
             // Store assistant message
             const assistantMessage = testres.choices[0].message;
             await dbService.addMessage(chatId, assistantMessage as any);
@@ -201,13 +203,10 @@ app.post("/chat", async (req, res) => {
         else{
             // console.log(toolCallResponse);
             for (const response of toolCallResponse){
-                fullMessages.push({
-                    role: "assistant",
-                    content: response.content
-                });
+                fullMessages.push(response);
             }
 
-            console.log(fullMessages[fullMessages.length - 1]);
+            // console.log(fullMessages[fullMessages.length - 1]);
 
             const secondres = await groq.chat.completions.create({
                 model: "llama-3.1-8b-instant",

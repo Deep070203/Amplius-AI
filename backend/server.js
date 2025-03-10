@@ -113,6 +113,8 @@ app.post("/chat", (req, res) => __awaiter(void 0, void 0, void 0, function* () {
         if (!agent) {
             console.log("Agent not found");
         }
+        // console.log("message: ", messages);
+        // console.log("chat: ", chat);
         // Get the latest user message
         const userMessage = messages[messages.length - 1];
         // Search for relevant chunks if the agent has documents
@@ -127,8 +129,7 @@ app.post("/chat", (req, res) => __awaiter(void 0, void 0, void 0, function* () {
         // Create system message with guidance and context
         const systemMessage = {
             role: "system",
-            content: `You are an AI assistant. You have the ability to create code and mermaid diagram. You also have the ability to use tools. If you did use a tool, check the last meesage and if the role is tool
-            then see its "content" and answer accordingly.
+            content: `You are an AI assistant. You have the ability to create code and mermaid diagram. You also have the ability to use tools. If the last message is by tool, then first print the "content" and thenjust explain what it did.
             After you write the code, write the "explanation" of that code in plain simple English (you do not need to highlight the variables or functions in <code> </code>).
             Also, Only if the user asks to create a Flowchart, Sequence, Gantt, Class, State, Mindmap, Quadrant, Pie Chart, you should use mermaid syntax which is <code class="language-mermaid"> </code>.
             Guidance:
@@ -139,8 +140,10 @@ app.post("/chat", (req, res) => __awaiter(void 0, void 0, void 0, function* () {
                        When using information from the context, cite the source.`
                 : ''}`
         };
+        const simplifiedMessages = messages.map(({ role, content }) => ({ role, content }));
         // Combine system message with user messages
-        const fullMessages = [systemMessage, ...messages];
+        const fullMessages = [systemMessage, ...simplifiedMessages];
+        // console.log("fullMessages: ", fullMessages);
         // Store user message
         yield db_1.dbService.addMessage(chatId, messages[messages.length - 1]);
         // const response = await axios.post(
@@ -163,7 +166,7 @@ app.post("/chat", (req, res) => __awaiter(void 0, void 0, void 0, function* () {
         });
         const toolCallResponse = yield (0, groqtool_utils_1.applyToolCalls)(testres);
         if (toolCallResponse.length === 0) {
-            console.log(testres.choices[0].message);
+            // console.log(testres.choices[0].message);
             // Store assistant message
             const assistantMessage = testres.choices[0].message;
             yield db_1.dbService.addMessage(chatId, assistantMessage);
@@ -173,12 +176,9 @@ app.post("/chat", (req, res) => __awaiter(void 0, void 0, void 0, function* () {
         else {
             // console.log(toolCallResponse);
             for (const response of toolCallResponse) {
-                fullMessages.push({
-                    role: "assistant",
-                    content: response.content
-                });
+                fullMessages.push(response);
             }
-            console.log(fullMessages[fullMessages.length - 1]);
+            // console.log(fullMessages[fullMessages.length - 1]);
             const secondres = yield groq.chat.completions.create({
                 model: "llama-3.1-8b-instant",
                 messages: fullMessages,
