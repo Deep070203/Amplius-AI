@@ -28,8 +28,6 @@ const app = (0, express_1.default)();
 app.use(express_1.default.json());
 app.use((0, cors_1.default)());
 const groq = new groq_sdk_1.default({ apiKey: process.env.GROQ_API_KEY });
-const GROQ_API_URL = "https://api.groq.com/openai/v1/chat/completions";
-const GROQ_API_KEY = process.env.GROQ_API_KEY || "";
 // Agent endpoints
 app.post("/agents", (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     try {
@@ -131,7 +129,7 @@ app.post("/chat", (req, res) => __awaiter(void 0, void 0, void 0, function* () {
             role: "system",
             content: `You are an AI assistant. You have the ability to create code and mermaid diagram. You also have the ability to use tools. If the last message is by tool, then first print the "content" and thenjust explain what it did.
             After you write the code, write the "explanation" of that code in plain simple English (you do not need to highlight the variables or functions in <code> </code>).
-            Also, Only if the user asks to create a Flowchart, Sequence, Gantt, Class, State, Mindmap, Quadrant, Pie Chart, you should use mermaid syntax which is <code class="language-mermaid"> </code>.
+            Also, Only if the user asks to create a Flowchart, Sequence, Gantt, Class, State, Mindmap, Quadrant, Pie Chart, you should use mermaid language.
             Guidance:
              ${agent.guidance || "Be helpful."}
             Context:
