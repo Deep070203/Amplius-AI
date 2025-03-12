@@ -90,7 +90,7 @@ body {
 }
 
 .sidebar-content {
-  height: calc(100vh - 60px);
+  height: 83vh;
   overflow-y: auto;
 }
 
@@ -114,10 +114,6 @@ body {
 
 .sidebar-button.active {
   background-color: radial-gradient(white 1px, transparent 0);
-}
-
-.sidebar-container {
-  height: 92vh;
 }
 
 /* Chat Styles */

@@ -1,15 +1,10 @@
 import { Client } from "@modelcontextprotocol/sdk/client/index.js";
 import { StdioClientTransport } from "@modelcontextprotocol/sdk/client/stdio.js";
-import { MCP_SERVER_ARGS, MCP_SERVER_COMMAND } from "./env";
-
-const transport = new StdioClientTransport({
-  command: MCP_SERVER_COMMAND,
-  args: MCP_SERVER_ARGS,
-});
+import { getMcpConfigs } from "../utils/mcpConfig";
 
 const mcpClient = new Client(
   {
-    name: "example-client",
+    name: "amplius-client",
     version: "1.0.0",
   },
   {
@@ -17,10 +12,16 @@ const mcpClient = new Client(
   }
 );
 
-mcpClient.connect(transport).catch((error) => {
-  console.error("Failed to connect to MCP server:", error);
-  process.exit(1);
-});
+const mcpConfigs = getMcpConfigs();
+// console.log(mcpConfigs);
+
+for (const MCPserver of mcpConfigs) {
+  const transport = new StdioClientTransport({command: MCPserver.command, args: MCPserver.args});
+  mcpClient.connect(transport).catch((error) => {
+    console.error("Failed to connect to MCP server:", error);
+    process.exit(1);
+  });
+}
 
 console.log(mcpClient.listTools());
 

@@ -1,0 +1,20 @@
+{
+  "mcpServers": [
+    {
+      "command": "npx",
+      "args": [
+        "-y",
+        "@modelcontextprotocol/server-filesystem", 
+        "/Users/deepshah/Desktop/Amplius-AI/backend"
+      ],
+      "env": ""
+    },
+    {
+      "command": "npx",
+      "args": [
+        "-y",
+        "@modelcontextprotocol/server-sequential-thinking"
+      ]
+    }
+  ]
+}
