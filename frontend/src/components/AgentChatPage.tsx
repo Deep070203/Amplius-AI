@@ -58,6 +58,27 @@ const AgentChatPage: React.FC = () => {
     }
   };
 
+  const handleDeleteChat = async (id: string) => {
+    try {
+      await api.deleteChat(id);
+      setChats(prev => prev.filter(c => c.id !== id));
+      if (currentChat?.id === id) {
+        setCurrentChat(null);
+      }
+    } catch (error) {
+      console.error("Error deleting chat:", error);
+    }
+  };
+
+  const handleRenameChat = async (id: string, newName: string) => {
+    try {
+      await api.renameChat(id, newName);
+      setChats(prev => prev.map(c => (c.id === id ? { ...c, name: newName } : c)));
+    } catch (error) {
+      console.error("Error renaming chat:", error);
+    }
+  };
+
   const handleChatSelect = async (id: string) => {
     const selected = chats.find(c => c.id === id);
     if (selected) {
@@ -98,6 +119,8 @@ const AgentChatPage: React.FC = () => {
             currentChatId={currentChat?.id ?? null}
             selectChat={handleChatSelect}
             newChat={handleCreateChat}
+            deleteChat={handleDeleteChat}
+            renameChat={handleRenameChat}
           />}
         </div>
         <div className='chat-container'>

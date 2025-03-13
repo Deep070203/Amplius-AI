@@ -29,6 +29,15 @@ export const api = {
         const response = await axios.post(`${API_URL}/chats`, { agentId, name });
         return response.data;
     },
+
+    async renameChat(chatId: string, newName: string): Promise<Chat> {
+        const response = await axios.patch(`${API_URL}/chats/${chatId}`, { name: newName });
+        return response.data;
+    },
+
+    async deleteChat(chatId: string): Promise<void> {
+        await axios.delete(`${API_URL}/chats/${chatId}`);
+    },
     
     async getAgentChats(agentId: string): Promise<Chat[]> {
         const response = await axios.get(`${API_URL}/agents/${agentId}/chats`);
