@@ -66,6 +66,21 @@ exports.dbService = {
             });
         });
     },
+    renameChat(chatId, newName) {
+        return __awaiter(this, void 0, void 0, function* () {
+            return prisma.chat.update({
+                where: { id: chatId },
+                data: { name: newName },
+            });
+        });
+    },
+    deleteChat(chatId) {
+        return __awaiter(this, void 0, void 0, function* () {
+            return prisma.chat.delete({
+                where: { id: chatId },
+            });
+        });
+    },
     getChat(id) {
         return __awaiter(this, void 0, void 0, function* () {
             return prisma.chat.findUnique({

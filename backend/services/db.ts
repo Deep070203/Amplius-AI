@@ -54,6 +54,19 @@ export const dbService = {
     });
   },
 
+  async renameChat(chatId: string, newName: string) {
+    return prisma.chat.update({
+      where: { id: chatId },
+      data: { name: newName },
+    });
+  },
+
+  async deleteChat(chatId: string) {
+    return prisma.chat.delete({
+      where: { id: chatId },
+    });
+  },
+
   async getChat(id: string) {
     return prisma.chat.findUnique({
       where: { id },

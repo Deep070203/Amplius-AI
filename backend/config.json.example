@@ -5,7 +5,7 @@
       "args": [
         "-y",
         "@modelcontextprotocol/server-filesystem", 
-        "/Users/deepshah/Desktop/Amplius-AI/backend"
+        "enter_your_path_here"
       ],
       "env": ""
     },

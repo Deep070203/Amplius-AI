@@ -142,8 +142,6 @@ app.post("/chat", async (req, res) => {
         const systemMessage = {
             role: "system",
             content: `You are an AI assistant. You have the ability to create code and mermaid diagram. You also have the ability to use tools. If the last message is by tool, then first print the "content" and thenjust explain what it did.
-            After you write the code, write the "explanation" of that code in plain simple English (you do not need to highlight the variables or functions in <code> </code>).
-            Also, Only if the user asks to create a Flowchart, Sequence, Gantt, Class, State, Mindmap, Quadrant, Pie Chart, you should use mermaid language.
             Guidance:
              ${agent!.guidance || "Be helpful."}
             Context:
@@ -258,6 +256,29 @@ app.get("/chats/:chatId/messages", async (req, res) => {
     } catch (error) {
         console.error("Error fetching messages:", error);
         res.status(500).json({ error: "Failed to fetch messages" });
+    }
+});
+
+app.patch("/chats/:chatId", async (req, res) => {
+    try {
+        const { chatId } = req.params;
+        const { name } = req.body;
+        const updatedChat = await dbService.renameChat(chatId, name);
+        res.json(updatedChat);
+    } catch (error) {
+        console.error("Error renaming chat:", error);
+        res.status(500).json({ error: "Failed to rename chat" });
+    }
+});
+
+app.delete("/chats/:chatId", async (req, res) => {
+    try {
+        const { chatId } = req.params;
+        await dbService.deleteChat(chatId);
+        res.status(204).send();
+    } catch (error) {
+        console.error("Error deleting chat:", error);
+        res.status(500).json({ error: "Failed to delete chat" });
     }
 });
 
