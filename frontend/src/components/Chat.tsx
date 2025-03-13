@@ -7,7 +7,7 @@ import remarkGfm from "remark-gfm";
 import remarkParse from "remark-parse";
 import { CodeProps } from 'react-markdown/lib/ast-to-react';
 import CodeBlock from "./CodeBlock";
-import { FaPlus } from "react-icons/fa";
+// import { FaPlus } from "react-icons/fa";
 
 interface ChatProps {
   chatId: string;
@@ -98,7 +98,7 @@ const Chat: React.FC<ChatProps> = ({ chatId, messages, updateMessages }) => {
           <div ref={messagesEndRef} />
       </div>
       <div id="footer">
-        <button className="add-file-button" aria-label="Add file"><FaPlus size={16} /></button>
+        {/* <button className="add-file-button" aria-label="Add file"><FaPlus size={16} /></button> */}
         <div className="input-bar">
           <input
             className="input-container"
