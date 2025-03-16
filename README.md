@@ -47,4 +47,5 @@ Features:
 2. Add files and chat with them (TODO: PDF viewer)
 3. Produces Formatted code that user can copy
 4. Produces Diagrams(Sequence, Gantt, Pie Chart etc.)
-5. More features are coming!
+5. MCP Client - Works with MCP servers (currently supports npx)
+6. More features are coming!
