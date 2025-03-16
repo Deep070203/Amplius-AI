@@ -29,3 +29,4 @@ export function getMcpServerConfig(index: number = 0): McpServerConfig | null {
   const configs = getMcpConfigs();
   return configs[index] || null;
 }
+

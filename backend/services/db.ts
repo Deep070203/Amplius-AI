@@ -141,4 +141,10 @@ export const dbService = {
       },
     });
   },
+
+  async getDocument(id: string) {
+    return prisma.document.findUnique({
+      where: { id },
+    });
+  },
 };

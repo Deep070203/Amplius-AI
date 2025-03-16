@@ -121,7 +121,7 @@ app.post("/chat", (req, res) => __awaiter(void 0, void 0, void 0, function* () {
             const relevantChunks = yield documentProcessor_1.DocumentProcessor.searchRelevantChunks(userMessage.content, chat.agentId);
             context = relevantChunks.map(chunk => ({
                 content: chunk.content,
-                source: chunk.documentId
+                source: db_1.dbService.getDocument(chunk.documentId).then(doc => doc.filename).catch(() => "Unknown")
             }));
         }
         // Create system message with guidance and context
@@ -167,6 +167,7 @@ app.post("/chat", (req, res) => __awaiter(void 0, void 0, void 0, function* () {
             const assistantMessage = testres.choices[0].message;
             yield db_1.dbService.addMessage(chatId, assistantMessage);
             // console.log(assistantMessage);
+            console.log("testres: ", context);
             res.json(Object.assign(Object.assign({}, testres), { sources: context.map(c => c.source) }));
         }
         else {
@@ -259,7 +260,7 @@ app.post("/agents/:agentId/documents", (req, res) => __awaiter(void 0, void 0, v
 }));
 app.get("/agents/:agentId/documents", (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     try {
-        const { agentId } = req.body;
+        const { agentId } = req.params;
         const document = yield db_1.dbService.getAgentDocuments(agentId);
         res.json(document);
     }

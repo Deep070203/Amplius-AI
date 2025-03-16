@@ -22,7 +22,7 @@ const groq = new Groq({ apiKey: process.env.GROQ_API_KEY });
 
 interface DocumentContext {
     content: string;
-    source: string;
+    source: Promise<string>;
 }
 
 interface AgentUpdates {
@@ -134,7 +134,7 @@ app.post("/chat", async (req, res) => {
 
              context = relevantChunks.map(chunk => ({
                  content: chunk.content,
-                 source: chunk.documentId
+                 source: dbService.getDocument(chunk.documentId)!.then(doc => doc!.filename).catch(() => "Unknown")
              }));
          }
 
@@ -190,7 +190,7 @@ app.post("/chat", async (req, res) => {
             await dbService.addMessage(chatId, assistantMessage as any);
 
             // console.log(assistantMessage);
-
+            // console.log("context: ", context);
             res.json({
                 ...testres,
                 sources: context.map(c => c.source)
@@ -295,7 +295,7 @@ app.post("/agents/:agentId/documents", async (req, res) => {
 
 app.get("/agents/:agentId/documents", async (req, res) => {
     try {
-        const { agentId } = req.body;
+        const { agentId } = req.params;
         const document = await dbService.getAgentDocuments(agentId);
         res.json(document);
     } catch (error) {

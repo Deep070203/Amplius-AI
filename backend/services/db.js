@@ -163,4 +163,11 @@ exports.dbService = {
             });
         });
     },
+    getDocument(id) {
+        return __awaiter(this, void 0, void 0, function* () {
+            return prisma.document.findUnique({
+                where: { id },
+            });
+        });
+    },
 };
